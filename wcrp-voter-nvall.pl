@@ -1,5 +1,5 @@
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-# wcrp-voter-tables
+# wcrp-voter-nvall
 #
 #
 #
@@ -20,20 +20,15 @@ no warnings "uninitialized";
 =head1 Function
 =over
 =head2 Overview
-	This program will analyze a washoe-county-voter file
+	This program will analyze a nevada-voter file
 		a) file is sorted by precinct ascending
 		b)
-	Input: county voter registration file.
+	Input: state voter registration file.
 	       
 	Output: a csv file containing the extracted fields 
 =cut
 
 my $records;
-#my $inputFile 				= "../test-in/2019.nv.VoterList.ElgbVtr-250-low.csv";    
-#my $inputFile 				= "../test-in/nv-washoe-voter-20190219.csv";    
-
-#my $inputFile 				= "../prod-load-blue/VoterList.ElgbVtr.20190509.csv";
-#my $voterStatsFile    = "../prod-load-blue/precinct-voterstat-2019 2nd Free List 3.19.19.csv";
 
 my $inputFile 				= "base-nvtables-merge-test.csv";    #
 my $voterStatsFile    = "sorted-extracts-test.csv";
@@ -285,11 +280,13 @@ sub main {
 	  or die "Unable to open baseFile: $baseFile Reason: $!";
 	print $baseFileh $baseHeading;
 
-	printLine ("Voter Voting-table file: $votingFile\n");
-	printLine ("My votingFile is: $votingFile.\n");
-	open( $votingFileh, ">$votingFile" )
-	  or die "Unable to open votingFileh: $votingFile Reason: $!";
-	print $votingFileh $votingHeading;
+	if ($votingFile ne "") {
+		printLine ("Voter Voting-table file: $votingFile\n");
+		printLine ("My votingFile is: $votingFile.\n");
+		open( $votingFileh, ">$votingFile" )
+			or die "Unable to open votingFileh: $votingFile Reason: $!";
+		print $votingFileh $votingHeading;
+	}
 
 
 	# initialize the voter email log and the email array
