@@ -31,8 +31,8 @@ no warnings "uninitialized";
 my $records;
 
 my $inputFile 				= "base-nvtables-merge-test.csv";    #
-my $voterStatsFile    = "sorted-extracts-test.csv";
-my $voterEmailFile    = "../prod-load-blue/email-sort.csv";
+#my $voterStatsFile    = "sorted-extracts-test.csv";
+#my $voterEmailFile    = "../prod-load-blue/email-sort.csv";
 
 my $voterEmailFileh;
 my $voterStatsFileh;
@@ -381,6 +381,17 @@ sub main {
 		$dd = sprintf( "%02d", $date[1] );
 		$yy = sprintf( "%02d", $date[2] );
 		$baseLine{"Birth Date"}   = "$mm/$dd/$yy";
+		
+		if ($yy <= 20) {$yy = 2000 + $yy}
+		elsif ($yy > 20) {$yy = 1900 + $yy};
+		$adjustedDate = "$mm/$dd/$yy";
+		$before = Time::Piece->strptime( $adjustedDate, "%m/%d/%Y" );
+		$now            = localtime;
+		my $age = $now - $before;
+		$age = ( $age / (86400)/365 );
+		$age = round($age);
+		$baseLine{"Age"}         = $age;
+
 		@date = split( /\s*\/\s*/, $csvRowHash{"reg_date"}, -1 );
 		$mm = sprintf( "%02d", $date[0] );
 		$dd = sprintf( "%02d", $date[1] );
@@ -400,7 +411,8 @@ sub main {
 		$daysRegistered = ( $daysRegistered / (86400) );
 		$daysRegistered = round($daysRegistered);
 	#	printLine ("line= $linesRead voterid= $voterid adjusted= $adjustedDate registered= $daysRegistered\n");
-		$baseLine{"Days Reg"}     = int($daysRegistered);
+		$baseLine{"Days Totl Reg"}     = int($daysRegistered);
+
 		#
 		#  locate county data
 		#	
@@ -415,8 +427,6 @@ sub main {
 			$baseLine{"Leans"}        = $voterStatsArray[$stats][13];
 			$baseLine{"Strength"}     = $voterStatsArray[$stats][14];
 			$baseLine{"Reg Date Orig"}  = $voterStatsArray[$stats][4];
-			$baseLine{"Days Totl Reg"}  = $voterStatsArray[$stats][5];
-			$baseLine{"Age"}          = $voterStatsArray[$stats][6];
 			$statsAdded = $statsAdded + 1;
 		}
 		#
